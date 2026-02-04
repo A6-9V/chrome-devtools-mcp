@@ -91,7 +91,10 @@ export const startTrace = defineTool({
     }
 
     if (request.params.autoStop) {
-      await new Promise(resolve => setTimeout(resolve, 5_000));
+      // Wait for the page to be fully loaded before stopping the trace.
+      // This is better than a fixed timeout because it adapts to the page's
+      // loading speed.
+      await page.waitForNetworkIdle({idleTime: 500, timeout: 10000});
       await stopTracingAndAppendOutput(page, response, context);
     } else {
       response.appendResponseLine(
