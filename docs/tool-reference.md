@@ -29,8 +29,9 @@
 - **[Network](#network)** (2 tools)
   - [`get_network_request`](#get_network_request)
   - [`list_network_requests`](#list_network_requests)
-- **[Debugging](#debugging)** (4 tools)
+- **[Debugging](#debugging)** (5 tools)
   - [`evaluate_script`](#evaluate_script)
+  - [`get_page_content`](#get_page_content)
   - [`list_console_messages`](#list_console_messages)
   - [`take_screenshot`](#take_screenshot)
   - [`take_snapshot`](#take_snapshot)
@@ -293,6 +294,16 @@ so returned values have to JSON-serializable.
   Example with arguments: `(el) => {
   return el.innerText;
 }`
+
+---
+
+### `get_page_content`
+
+**Description:** Get the HTML content of the currently selected page.
+
+**Parameters:**
+
+- **uid** (string) _(optional)_: The uid of an element on the page from the page content snapshot to get the content of. If omitted, the entire page content is returned.
 
 ---
 
