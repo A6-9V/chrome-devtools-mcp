@@ -6,6 +6,11 @@
 import assert from 'node:assert';
 import {describe, it} from 'node:test';
 
+import type {
+  ImageContent,
+  TextContent,
+} from '@modelcontextprotocol/sdk/types.js';
+
 import {getMockRequest, getMockResponse, html, withBrowser} from './utils.js';
 
 describe('McpResponse', () => {
@@ -13,9 +18,9 @@ describe('McpResponse', () => {
     await withBrowser(async (response, context) => {
       response.setIncludePages(true);
       const result = await response.handle('test', context);
-      assert.equal((result[0] as any).type, 'text');
+      assert.equal((result[0] as TextContent).type, 'text');
       assert.deepStrictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Pages
 0: about:blank [selected]`,
@@ -28,9 +33,9 @@ describe('McpResponse', () => {
       response.appendResponseLine('Testing 1');
       response.appendResponseLine('Testing 2');
       const result = await response.handle('test', context);
-      assert.equal((result[0] as any).type, 'text');
+      assert.equal((result[0] as TextContent).type, 'text');
       assert.deepStrictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 Testing 1
 Testing 2`,
@@ -43,8 +48,11 @@ Testing 2`,
       const page = context.getSelectedPage();
       page.accessibility.snapshot = async () => null;
       const result = await response.handle('test', context);
-      assert.equal((result[0] as any).type, 'text');
-      assert.deepStrictEqual((result[0] as any).text, `# test response`);
+      assert.equal((result[0] as TextContent).type, 'text');
+      assert.deepStrictEqual(
+        (result[0] as TextContent).text,
+        `# test response`,
+      );
     });
   });
 
@@ -56,9 +64,9 @@ Testing 2`,
       await page.focus('button');
       response.setIncludeSnapshot(true);
       const result = await response.handle('test', context);
-      assert.equal((result[0] as any).type, 'text');
+      assert.equal((result[0] as TextContent).type, 'text');
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Page content
 uid=1_0 RootWebArea ""
@@ -82,9 +90,9 @@ uid=1_0 RootWebArea ""
       await page.focus('input');
       response.setIncludeSnapshot(true);
       const result = await response.handle('test', context);
-      assert.equal((result[0] as any).type, 'text');
+      assert.equal((result[0] as TextContent).type, 'text');
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Page content
 uid=1_0 RootWebArea "My test page"
@@ -99,9 +107,9 @@ uid=1_0 RootWebArea "My test page"
     await withBrowser(async (response, context) => {
       context.setNetworkConditions('Slow 3G');
       const result = await response.handle('test', context);
-      assert.equal((result[0] as any).type, 'text');
+      assert.equal((result[0] as TextContent).type, 'text');
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Network emulation
 Emulating: Slow 3G
@@ -114,18 +122,18 @@ Default navigation timeout set to 100000 ms`,
     await withBrowser(async (response, context) => {
       const result = await response.handle('test', context);
       context.setNetworkConditions(null);
-      assert.equal((result[0] as any).type, 'text');
-      assert.strictEqual((result[0] as any).text, `# test response`);
+      assert.equal((result[0] as TextContent).type, 'text');
+      assert.strictEqual((result[0] as TextContent).text, `# test response`);
     });
   });
   it('adds image when image is attached', async () => {
     await withBrowser(async (response, context) => {
       response.attachImage({data: 'imageBase64', mimeType: 'image/png'});
       const result = await response.handle('test', context);
-      assert.strictEqual((result[0] as any).text, `# test response`);
-      assert.equal((result[1] as any).type, 'image');
-      assert.strictEqual((result[1] as any).data, 'imageBase64');
-      assert.strictEqual((result[1] as any).mimeType, 'image/png');
+      assert.strictEqual((result[0] as TextContent).text, `# test response`);
+      assert.equal((result[1] as ImageContent).type, 'image');
+      assert.strictEqual((result[1] as ImageContent).data, 'imageBase64');
+      assert.strictEqual((result[1] as ImageContent).mimeType, 'image/png');
     });
   });
 
@@ -134,7 +142,7 @@ Default navigation timeout set to 100000 ms`,
       context.setCpuThrottlingRate(4);
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## CPU emulation
 Emulating: 4x slowdown`,
@@ -146,7 +154,7 @@ Emulating: 4x slowdown`,
     await withBrowser(async (response, context) => {
       context.setCpuThrottlingRate(1);
       const result = await response.handle('test', context);
-      assert.strictEqual((result[0] as any).text, `# test response`);
+      assert.strictEqual((result[0] as TextContent).text, `# test response`);
     });
   });
 
@@ -165,7 +173,7 @@ Emulating: 4x slowdown`,
       const result = await response.handle('test', context);
       await context.getDialog()?.dismiss();
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 # Open dialog
 alert: test (default value: test).
@@ -182,7 +190,7 @@ Call handle_dialog to handle it before continuing.`,
       };
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Network requests
 Showing 1-1 of 1 (Page 1 of 1).
@@ -198,7 +206,7 @@ http://example.com GET [pending]`,
         return [getMockRequest()];
       };
       const result = await response.handle('test', context);
-      assert.strictEqual((result[0] as any).text, `# test response`);
+      assert.strictEqual((result[0] as TextContent).text, `# test response`);
     });
   });
 
@@ -228,7 +236,7 @@ http://example.com GET [pending]`,
       const result = await response.handle('test', context);
 
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Request http://example.com
 Status:  [success - 200]
@@ -257,7 +265,7 @@ http://example.com POST [success - 200]`,
       response.attachNetworkRequest(request.url());
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Request http://example.com
 Status:  [pending]
@@ -284,14 +292,18 @@ http://example.com GET [pending]`,
       });
       await consoleMessagePromise;
       const result = await response.handle('test', context);
-      assert.ok((result[0] as any).text);
+      assert.ok((result[0] as TextContent).text);
       // Cannot check the full text because it contains local file path
       assert.ok(
-        (result[0] as any).text.toString().startsWith(`# test response
+        (result[0] as TextContent).text.toString().startsWith(`# test response
 ## Console messages
 Log>`),
       );
-      assert.ok((result[0] as any).text.toString().includes('Hello from the test'));
+      assert.ok(
+        (result[0] as TextContent).text
+          .toString()
+          .includes('Hello from the test'),
+      );
     });
   });
 
@@ -299,9 +311,9 @@ Log>`),
     await withBrowser(async (response, context) => {
       response.setIncludeConsoleData(true);
       const result = await response.handle('test', context);
-      assert.ok((result[0] as any).text);
+      assert.ok((result[0] as TextContent).text);
       assert.strictEqual(
-        (result[0] as any).text.toString(),
+        (result[0] as TextContent).text.toString(),
         `# test response
 ## Console messages
 <no console messages found>`,
@@ -326,7 +338,7 @@ describe('McpResponse network request filtering', () => {
       };
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Network requests
 Showing 1-2 of 2 (Page 1 of 1).
@@ -350,7 +362,7 @@ http://example.com GET [pending]`,
       };
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Network requests
 Showing 1-1 of 1 (Page 1 of 1).
@@ -373,7 +385,7 @@ http://example.com GET [pending]`,
       };
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Network requests
 No requests found.`,
@@ -395,7 +407,7 @@ No requests found.`,
       };
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Network requests
 Showing 1-5 of 5 (Page 1 of 1).
@@ -424,7 +436,7 @@ http://example.com GET [pending]`,
       };
       const result = await response.handle('test', context);
       assert.strictEqual(
-        (result[0] as any).text,
+        (result[0] as TextContent).text,
         `# test response
 ## Network requests
 Showing 1-5 of 5 (Page 1 of 1).
@@ -445,7 +457,7 @@ describe('McpResponse network pagination', () => {
       context.getNetworkRequests = () => requests;
       response.setIncludeNetworkRequests(true);
       const result = await response.handle('test', context);
-      const text = ((result[0] as any).text as string).toString();
+      const text = ((result[0] as TextContent).text as string).toString();
       assert.ok(text.includes('Showing 1-5 of 5 (Page 1 of 1).'));
       assert.ok(!text.includes('Next page:'));
       assert.ok(!text.includes('Previous page:'));
@@ -462,7 +474,7 @@ describe('McpResponse network pagination', () => {
       };
       response.setIncludeNetworkRequests(true, {pageSize: 10});
       const result = await response.handle('test', context);
-      const text = ((result[0] as any).text as string).toString();
+      const text = ((result[0] as TextContent).text as string).toString();
       assert.ok(text.includes('Showing 1-10 of 30 (Page 1 of 3).'));
       assert.ok(text.includes('Next page: 1'));
       assert.ok(!text.includes('Previous page:'));
@@ -480,7 +492,7 @@ describe('McpResponse network pagination', () => {
         pageIdx: 1,
       });
       const result = await response.handle('test', context);
-      const text = ((result[0] as any).text as string).toString();
+      const text = ((result[0] as TextContent).text as string).toString();
       assert.ok(text.includes('Showing 11-20 of 25 (Page 2 of 3).'));
       assert.ok(text.includes('Next page: 2'));
       assert.ok(text.includes('Previous page: 0'));
@@ -496,7 +508,7 @@ describe('McpResponse network pagination', () => {
         pageIdx: 10, // Invalid page number
       });
       const result = await response.handle('test', context);
-      const text = ((result[0] as any).text as string).toString();
+      const text = ((result[0] as TextContent).text as string).toString();
       assert.ok(
         text.includes('Invalid page number provided. Showing first page.'),
       );
