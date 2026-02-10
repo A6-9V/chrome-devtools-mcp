@@ -12,6 +12,17 @@ import type {Tool} from '@modelcontextprotocol/sdk/types.js';
 
 import {cliOptions} from '../build/src/cli.js';
 import {ToolCategories} from '../build/src/tools/categories.js';
+import * as consoleTools from '../build/src/tools/console.js';
+import * as contentTools from '../build/src/tools/content.js';
+import * as emulationTools from '../build/src/tools/emulation.js';
+import * as inputTools from '../build/src/tools/input.js';
+import * as networkTools from '../build/src/tools/network.js';
+import * as pagesTools from '../build/src/tools/pages.js';
+import * as performanceTools from '../build/src/tools/performance.js';
+import * as screenshotTools from '../build/src/tools/screenshot.js';
+import * as scriptTools from '../build/src/tools/script.js';
+import * as snapshotTools from '../build/src/tools/snapshot.js';
+import type {ToolDefinition} from '../build/src/tools/ToolDefinition.js';
 
 const MCP_SERVER_PATH = 'build/src/index.js';
 const OUTPUT_PATH = './docs/tool-reference.md';
@@ -188,7 +199,31 @@ async function generateToolDocumentation(): Promise<void> {
 
     // List all available tools
     const {tools} = await client.listTools();
-    const toolsWithAnnotations = tools as ToolWithAnnotations[];
+
+    // Map source tools to get annotations
+    const sourceTools = [
+      ...Object.values(consoleTools),
+      ...Object.values(contentTools),
+      ...Object.values(emulationTools),
+      ...Object.values(inputTools),
+      ...Object.values(networkTools),
+      ...Object.values(pagesTools),
+      ...Object.values(performanceTools),
+      ...Object.values(screenshotTools),
+      ...Object.values(scriptTools),
+      ...Object.values(snapshotTools),
+    ] as ToolDefinition[];
+
+    const toolSourceMapping = new Map(sourceTools.map(t => [t.name, t]));
+
+    const toolsWithAnnotations = tools.map(tool => {
+      const source = toolSourceMapping.get(tool.name);
+      return {
+        ...tool,
+        annotations: source?.annotations,
+      } as ToolWithAnnotations;
+    });
+
     console.log(`Found ${tools.length} tools`);
 
     // Generate markdown documentation
