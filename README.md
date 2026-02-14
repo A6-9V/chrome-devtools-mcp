@@ -416,3 +416,16 @@ Chrome that requires permissions to create its own sandboxes. As a workaround,
 either disable sandboxing for `chrome-devtools-mcp` in your MCP client or use
 `--browser-url` to connect to a Chrome instance that you start manually outside
 of the MCP client sandbox.
+
+## Organization and Repository Setup
+
+If you are looking to set up Chrome DevTools MCP for an organization or multiple repositories, check out the following guides:
+
+- [Global Setup for All Repositories](ALL_REPOSITORIES_SETUP.md)
+- [Organization A6-9V Setup](orgs/A6-9V/runner-config.md)
+- [Organization L6-N9 Setup](orgs/L6-N9/runner-config.md)
+- [Templates for Workflows and Agents](templates/)
+
+Use the provided scripts for automation:
+- `setup-act-runner.sh`: Setup Gitea/Forgejo runners.
+- `scripts/rollout-mcp.sh`: Rollout MCP configurations to GitHub repositories.
