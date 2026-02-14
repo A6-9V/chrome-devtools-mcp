@@ -427,5 +427,6 @@ If you are looking to set up Chrome DevTools MCP for an organization or multiple
 - [Templates for Workflows and Agents](templates/)
 
 Use the provided scripts for automation:
+
 - `setup-act-runner.sh`: Setup Gitea/Forgejo runners.
 - `scripts/rollout-mcp.sh`: Rollout MCP configurations to GitHub repositories.

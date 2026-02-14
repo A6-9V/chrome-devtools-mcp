@@ -1,9 +1,9 @@
 name: MCP Chrome DevTools Check
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   mcp-check:
@@ -22,7 +22,7 @@ jobs:
       - name: Run MCP Server Help
         run: chrome-devtools-mcp --help
 
-      - name: Example: Run with Inspector (if applicable)
+      - name: 'Example: Run with Inspector (if applicable)'
         run: |
           # This is an example of how you might start the server for testing
           # npx @modelcontextprotocol/inspector chrome-devtools-mcp --headless=true &

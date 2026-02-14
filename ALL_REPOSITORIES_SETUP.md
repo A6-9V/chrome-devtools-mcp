@@ -15,6 +15,7 @@ To use the Chrome DevTools MCP server with your local AI agent (like Claude Desk
 ## 🏢 For Organizations (A6-9V, L6-N9)
 
 ### 1. Automation with GitHub PAT
+
 If you have a GitHub Personal Access Token, you can use the rollout script to add MCP workflows to all your repositories:
 
 ```bash
@@ -23,13 +24,16 @@ export GITHUB_TOKEN="your_token_here"
 ```
 
 ### 2. CI/CD Runner Setup
+
 To run browser-based tests or performance checks in your CI/CD pipelines (Forgejo/Gitea), set up a dedicated runner:
 
 - See [A6-9V Runner Config](orgs/A6-9V/runner-config.md)
 - See [L6-N9 Runner Config](orgs/L6-N9/runner-config.md)
 
 ### 3. Repository Templates
+
 We recommend adding the following files to your repositories:
+
 - `.github/workflows/mcp-check.yml`: [Template here](templates/mcp-workflow.yml)
 - `AGENTS.md`: [Template here](templates/AGENTS.md)
 
