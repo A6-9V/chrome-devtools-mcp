@@ -1,0 +1,29 @@
+name: MCP Chrome DevTools Check
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  mcp-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Chrome DevTools MCP
+        run: npm install -g chrome-devtools-mcp
+
+      - name: Run MCP Server Help
+        run: chrome-devtools-mcp --help
+
+      - name: 'Example: Run with Inspector (if applicable)'
+        run: |
+          # This is an example of how you might start the server for testing
+          # npx @modelcontextprotocol/inspector chrome-devtools-mcp --headless=true &
+          echo "MCP Server is ready for use in this repository."

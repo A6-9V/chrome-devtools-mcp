@@ -3,9 +3,9 @@
 
 # Chrome DevTools MCP
 
-[![npm chrome-devtools-mcp package](https://img.shields.io/npm/v/chrome-devtools-mcp.svg)](https://npmjs.org/package/chrome-devtools-mcp)
+[![Install in Claude](https://mcp-install.com/badge/claude?%7B%22name%22%3A%22chrome-devtools%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22chrome-devtools-mcp%40latest%22%5D%7D)](https://mcp-install.com/claude?%7B%22name%22%3A%22chrome-devtools%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22chrome-devtools-mcp%40latest%22%5D%7D)
 
-`chrome-devtools-mcp` lets your coding agent (such as Gemini, Claude, Cursor or Copilot)
+`chrome-devtools-mcp` is a Model-Context-Protocol (MCP) server that allows AI coding agents to
 control and inspect a live Chrome browser. It acts as a Model-Context-Protocol
 (MCP) server, giving your AI coding assistant access to the full power of
 Chrome DevTools for reliable automation, in-depth debugging, and performance analysis.
@@ -27,159 +27,37 @@ Chrome DevTools for reliable automation, in-depth debugging, and performance ana
 
 `chrome-devtools-mcp` exposes content of the browser instance to the MCP clients
 allowing them to inspect, debug, and modify any data in the browser or DevTools.
-Avoid sharing sensitive or personal information that you don't want to share with
-MCP clients.
+Avoid sharing sensitive or personal information that you do not want to share
+with MCP clients.
 
-## Requirements
+## Quick start
 
-- [Node.js](https://nodejs.org/) v20.19 or a newer [latest maintenance LTS](https://github.com/nodejs/Release#release-schedule) version.
-- [Chrome](https://www.google.com/chrome/) current stable version or newer.
-- [npm](https://www.npmjs.com/).
+### Claude Desktop
 
-## Getting started
-
-Add the following config to your MCP client:
+To use with Claude Desktop, add the following to your `app_support/Claude/config.json`:
 
 ```json
 {
   "mcpServers": {
     "chrome-devtools": {
       "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@latest"]
+      "args": ["chrome-devtools-mcp@latest"]
     }
   }
 }
 ```
 
-> [!NOTE]  
-> Using `chrome-devtools-mcp@latest` ensures that your MCP client will always use the latest version of the Chrome DevTools MCP server.
-
-### MCP Client configuration
-
-<details>
-  <summary>Amp</summary>
-  Follow https://ampcode.com/manual#mcp and use the config provided above. You can also install the Chrome DevTools MCP server using the CLI:
-
-```bash
-amp mcp add chrome-devtools -- npx chrome-devtools-mcp@latest
-```
-
-</details>
-
-<details>
-  <summary>Claude Code</summary>
-    Use the Claude Code CLI to add the Chrome DevTools MCP server (<a href="https://docs.anthropic.com/en/docs/claude-code/mcp">guide</a>):
-
-```bash
-claude mcp add chrome-devtools npx chrome-devtools-mcp@latest
-```
-
-</details>
-
-<details>
-  <summary>Cline</summary>
-  Follow https://docs.cline.bot/mcp/configuring-mcp-servers and use the config provided above.
-</details>
-
-<details>
-  <summary>Codex</summary>
-  Follow the <a href="https://github.com/openai/codex/blob/main/docs/advanced.md#model-context-protocol-mcp">configure MCP guide</a>
-  using the standard config from above. You can also install the Chrome DevTools MCP server using the Codex CLI:
-
-```bash
-codex mcp add chrome-devtools -- npx chrome-devtools-mcp@latest
-```
-
-**On Windows 11**
-
-Configure the Chrome install location and increase the startup timeout by updating `.codex/config.toml` and adding the following `env` and `startup_timeout_ms` parameters:
-
-```
-[mcp_servers.chrome-devtools]
-command = "cmd"
-args = [
-    "/c",
-    "npx",
-    "-y",
-    "chrome-devtools-mcp@latest",
-]
-env = { SystemRoot="C:\\Windows", PROGRAMFILES="C:\\Program Files" }
-startup_timeout_ms = 20_000
-```
-
-</details>
-
-<details>
-  <summary>Copilot CLI</summary>
-
-Start Copilot CLI:
-
-```
-copilot
-```
-
-Start the dialog to add a new MCP server by running:
-
-```
-/mcp add
-```
-
-Configure the following fields and press `CTRL+S` to save the configuration:
-
-- **Server name:** `chrome-devtools`
-- **Server Type:** `[1] Local`
-- **Command:** `npx`
-- **Arguments:** `-y, chrome-devtools-mcp@latest`
-
-</details>
-
-<details>
-  <summary>Copilot / VS Code</summary>
-  Follow the MCP install <a href="https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server">guide</a>,
-  with the standard config from above. You can also install the Chrome DevTools MCP server using the VS Code CLI:
-  
-  ```bash
-  code --add-mcp '{"name":"chrome-devtools","command":"npx","args":["chrome-devtools-mcp@latest"]}'
-  ```
-</details>
+### Installation
 
 <details>
   <summary>Cursor</summary>
 
-**Click the button to install:**
+Go to `Settings | MCP` -> `+ Add Server`.
 
-[<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor">](https://cursor.com/en/install-mcp?name=chrome-devtools&config=eyJjb21tYW5kIjoibnB4IC15IGNocm9tZS1kZXZ0b29scy1tY3BAbGF0ZXN0In0%3D)
+- Name: `chrome-devtools`
+- Type: `command`
+- Command: `npx chrome-devtools-mcp@latest`
 
-**Or install manually:**
-
-Go to `Cursor Settings` -> `MCP` -> `New MCP Server`. Use the config provided above.
-
-</details>
-
-<details>
-  <summary>Gemini CLI</summary>
-Install the Chrome DevTools MCP server using the Gemini CLI.
-
-**Project wide:**
-
-```bash
-gemini mcp add chrome-devtools npx chrome-devtools-mcp@latest
-```
-
-**Globally:**
-
-```bash
-gemini mcp add -s user chrome-devtools npx chrome-devtools-mcp@latest
-```
-
-Alternatively, follow the <a href="https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md#how-to-set-up-your-mcp-server">MCP guide</a> and use the standard config from above.
-
-</details>
-
-<details>
-  <summary>Gemini Code Assist</summary>
-  Follow the <a href="https://cloud.google.com/gemini/docs/codeassist/use-agentic-chat-pair-programmer#configure-mcp-servers">configure MCP guide</a>
-  using the standard config from above.
 </details>
 
 <details>
@@ -419,3 +297,17 @@ Chrome that requires permissions to create its own sandboxes. As a workaround,
 either disable sandboxing for `chrome-devtools-mcp` in your MCP client or use
 `--browser-url` to connect to a Chrome instance that you start manually outside
 of the MCP client sandbox.
+
+## Organization and Repository Setup
+
+If you are looking to set up Chrome DevTools MCP for an organization or multiple repositories, check out the following guides:
+
+- [Global Setup for All Repositories](ALL_REPOSITORIES_SETUP.md)
+- [Organization A6-9V Setup](orgs/A6-9V/runner-config.md)
+- [Organization L6-N9 Setup](orgs/L6-N9/runner-config.md)
+- [Templates for Workflows and Agents](templates/)
+
+Use the provided scripts for automation:
+
+- `setup-act-runner.sh`: Setup Gitea/Forgejo runners.
+- `scripts/rollout-mcp.sh`: Rollout MCP configurations to GitHub repositories.

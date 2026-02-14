@@ -1,4 +1,4 @@
-name: "⚡ Bolt: Advanced Performance Reviewer"
+name: '⚡ Bolt: Advanced Performance Reviewer'
 
 on:
   pull_request:
@@ -24,9 +24,8 @@ jobs:
 
           # 1. Detect N+1 Queries (DB call inside a loop)
           if echo "$DIFF" | grep -Pzo "(?s)\\.(map|forEach|filter)\\(.*\\n.*(db|repo|prisma|model)\\..*"; then
-            SUGGESTIONS="$SUGGESTIONS\\n- ⚡ **N+1 Query Detected:** You are making database calls inside a loop. Use **eager loading** (e.g., `.include` or `JOIN`) to fetch data in one batch."
+            SUGGESTIONS="$SUGGESTIONS\n- ⚡ **N+1 Query Detected:** You are making database calls inside a loop. Use **eager loading** (e.g., `.include` or `JOIN`) to fetch data in one batch."
           fi
-
 
           # Output to GitHub Env
           echo "suggestions<<EOF" >> $GITHUB_ENV
@@ -38,10 +37,10 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const suggestions = process.env.suggestions;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### ⚡ Bolt Performance Analysis\n\nI've reviewed your changes and found these optimization opportunities:\n${{ env.suggestions
-}}\n\n**"Every millisecond counts."**`
+              body: `### ⚡ Bolt Performance Analysis\n\nI've reviewed your changes and found these optimization opportunities:\n${suggestions}\n\n**"Every millisecond counts."**`
             })

@@ -1,56 +1,38 @@
 #!/bin/bash
-# Setup script for Gitea/Forgejo Runner (act_runner)
-# Usage: ./setup-act-runner.sh --url <REPO_URL> --token <TOKEN> [--name <RUNNER_NAME>]
-
+# Setup script
 set -e
-
-REPO_URL=""
+URL=""
 TOKEN=""
-RUNNER_NAME="my-act-runner"
-RUNNER_VERSION="0.2.10" # Check for latest version
-RUNNER_ARCH="linux-amd64"
-
-# Parse arguments
+RUNNER_NAME="chrome-devtools-mcp-runner"
+RUNNER_VERSION="0.2.10"
+LABELS="ubuntu-latest:docker://node:20,ubuntu-22.04:docker://node:20,ubuntu-20.04:docker://node:20"
+ARCH=$(uname -m)
+case $ARCH in
+    x86_64) RUNNER_ARCH="linux-amd64" ;;
+    aarch64) RUNNER_ARCH="linux-arm64" ;;
+    *) echo "Unsupported architecture: $ARCH"; false ;;
+esac
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --url) REPO_URL="$2"; shift ;;
+        --url) URL="$2"; shift ;;
         --token) TOKEN="$2"; shift ;;
         --name) RUNNER_NAME="$2"; shift ;;
-        *) echo "Unknown parameter passed: $1"; exit 1 ;;
+        --labels) LABELS="$2"; shift ;;
+        *) echo "Unknown parameter passed: $1"; false ;;
     esac
     shift
 done
-
-if [ -z "$REPO_URL" ] || [ -z "$TOKEN" ]; then
-    echo "Error: --url and --token are required."
-    echo "Usage: ./setup-act-runner.sh --url <REPO_URL> --token <TOKEN>"
-    exit 1
+if [ -z "$URL" ] || [ -z "$TOKEN" ]; then
+    echo "Error: --url and --token are required."; false
 fi
-
-echo "Setting up act_runner for $REPO_URL..."
-
-# Create a folder for the runner
+echo "Setting up act_runner for $URL..."
 mkdir -p act-runner && cd act-runner
-
-# Download act_runner
-echo "Downloading act_runner (v$RUNNER_VERSION)..."
 if [ ! -f "act_runner" ]; then
-    curl -o act_runner -L https://gitea.com/gitea/act_runner/releases/download/v${RUNNER_VERSION}/act_runner-${RUNNER_VERSION}-${RUNNER_ARCH}
+    curl -o act_runner -L "https://gitea.com/gitea/act_runner/releases/download/v${RUNNER_VERSION}/act_runner-${RUNNER_VERSION}-${RUNNER_ARCH}"
     chmod +x act_runner
 fi
-
-# Generate config if not exists
 if [ ! -f "config.yaml" ]; then
     ./act_runner generate-config > config.yaml
 fi
-
-# Register the runner
-echo "Registering runner..."
-./act_runner register \
-  --instance "$REPO_URL" \
-  --token "$TOKEN" \
-  --name "$RUNNER_NAME" \
-  --no-interactive
-
+./act_runner register --instance "$URL" --token "$TOKEN" --name "$RUNNER_NAME" --labels "$LABELS" --no-interactive
 echo "Runner registered successfully!"
-echo "To start the runner, run: cd act-runner && ./act_runner daemon"
