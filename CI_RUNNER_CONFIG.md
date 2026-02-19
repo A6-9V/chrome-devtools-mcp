@@ -8,7 +8,24 @@
 
 > **Note:** The registration token is sensitive and should not be committed. Please provide it when running the setup scripts.
 
-## Setup Instructions
+## DigitalOcean VPS Setup
+
+- **VPS Name:** `genx-fx-a6v9-vps`
+- **OS:** `Ubuntu 22.04 LTS`
+- **SSH Key:**
+  ```
+  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICw9/G//98IiSdsfAyn2tYS0ip9rE5wB6UAV1iue4dFm genxapitrading@gmail.com
+  ```
+
+### Usage
+
+1. Go to the DigitalOcean website to create a new Droplet.
+2. Select **Ubuntu 22.04 LTS**.
+3. In the **"Add SSH Key"** section, copy and paste the key above.
+4. Name the VPS **genx-fx-a6v9-vps**.
+5. Once created, use the provided IP address to connect to the server.
+
+## Runner Setup Instructions
 
 The repository appears to be hosted on a Gitea/Forgejo instance (`forge.mql5.io`). Therefore, we use `act_runner`.
 
