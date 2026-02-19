@@ -1,4 +1,4 @@
-name: "⚡ Bolt: Advanced Performance Reviewer"
+name: '⚡ Bolt: Advanced Performance Reviewer'
 
 on:
   pull_request:
@@ -23,8 +23,8 @@ jobs:
           SUGGESTIONS=""
 
           # 1. Detect N+1 Queries (DB call inside a loop)
-          if echo "$DIFF" | grep -Pzo "(?s)\\.(map|forEach|filter)\\(.*\\n.*(db|repo|prisma|model)\\..*"; then
-            SUGGESTIONS="$SUGGESTIONS\\n- ⚡ **N+1 Query Detected:** You are making database calls inside a loop. Use **eager loading** (e.g., `.include` or `JOIN`) to fetch data in one batch."
+          if echo "$DIFF" | grep -Pzo "(?s)\.(map|forEach|filter)\(.*\n.*(db|repo|prisma|model)\..*"; then
+            SUGGESTIONS="$SUGGESTIONS\n- ⚡ **N+1 Query Detected:** You are making database calls inside a loop. Use **eager loading** (e.g., `.include` or `JOIN`) to fetch data in one batch."
           fi
 
 
@@ -42,6 +42,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### ⚡ Bolt Performance Analysis\n\nI've reviewed your changes and found these optimization opportunities:\n${{ env.suggestions
-}}\n\n**"Every millisecond counts."**`
+              body: `### ⚡ Bolt Performance Analysis\n\nI've reviewed your changes and found these optimization opportunities:\n${process.env.suggestions}\n\n**"Every millisecond counts."**`
             })
